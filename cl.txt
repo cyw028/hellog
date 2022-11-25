@@ -1,0 +1,193 @@
+~
+[cyw@localhost vars]$ cat /proc/cpuinfo | awk '/cpu family/,/cpu MHz/{print}'
+cpu family	: 6
+model		: 142
+model name	: Intel(R) Core(TM) i5-10210U CPU @ 1.60GHz
+stepping	: 12
+microcode	: 0xd6
+cpu MHz		: 2112.001
+
+[cyw@localhost vars]$ cat /proc/cpuinfo | awk 'NR>=3 && NR<=8{print}'
+cpu family	: 6
+model		: 142
+model name	: Intel(R) Core(TM) i5-10210U CPU @ 1.60GHz
+stepping	: 12
+microcode	: 0xd6
+cpu MHz		: 2112.001
+
+[root@localhost ~]# cat /proc/cpuinfo | awk 'NR==5{print $6}' && cat /proc/cpuinfo | awk 'NR==5{print $9}'
+i5-10210Uc
+1.60GHz
+
+~
+ip_adr=`ifconfig ens33 | awk 'NR==2{print $2}'`
+ip_adr2=`hostname -I | awk '{print $1}'`
+echo "ip adress:$ip_adr"
+echo "ip adress2:$ip_adr2"
+
+~
+[cyw@localhost vars]$ awk 'BEGIN{print "start your displsy:"} NR>=2{print $1,$0} END{print "over"}' carkseld.sh
+start your displsy:
+carkseld carkseld cyw 123qwer
+carkseld carkseld cyw 123qwer
+over
+[cyw@localhost vars]$ cat carkseld.sh
+#!/bin/bash
+carkseld cyw 123qwer
+carkseld cyw 123qwer
+
+~
+[cyw@localhost ~]$ uname -a
+Linux localhost.localdomain 3.10.0-1160.el7.x86_64 #1 SMP  Mon Oct 19 16:18:59 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux
+[cyw@localhost ~]$ cat /proc/version
+Linux version 3.10.0-1160.el7.x86_64 (mockbuild@kbuilder.bsys.centos.org) (gcc version 4.8.5 20150623 (Red Hat 4.8.5-44) (GCC) ) #1 SMP Mon Oct 19 16:18:59 UTC 2020
+
+~[cyw@localhost ~]$ echo `date`
+Sat Oct 8 19:24:17 PDT 2022
+[cyw@localhost ~]$ echo 'date'
+date
+
+~crontab定时任务
+service crond start/stop/status/reload
+ *  *  *  *  *(分时月日周） user-name  command to be executed
+crontab -e编辑定时任务
+crontab -l查看定时任务
+crontab -r 删除定时任务         
+*/2 * * * * echo `date` >>test.txt
+
+~$ wc testfile           # testfile文件的统计信息  
+3 92 598 testfile       # testfile文件的行数为3、单词数92、字节数598 
+-l        #加入行数
+xx --help       #帮助文档
+
+~
+%s字符串 %f浮点型 
+%-10s 表示宽度10个字符，左对齐 
+%.2f 表示保留两位小数
+[root@localhost ~]# printf "%-10s %-5s %s %s \n" name sex old get xiaoming man 18 99 xiaohong girl 16 98
+name       sex   old get 
+xiaoming   man   18 99 
+xiaohong   girl  16 98 
+[root@localhost ~]# printf "%.2f %.2f\n" 11 23 45 13
+11.00 23.00
+45.00 13.00
+
+~nginx
+yum -y install gcc zlib zlib-devel pcre-devel openssl openssl-devel
+查看nginx进程是否启动：
+[root@localhost cyw]# netstat -plnt |grep nginx
+tcp        0      0 0.0.0.0:8089            0.0.0.0:*               LISTEN      2796/nginx: master  
+[root@localhost cyw]# ps -ef |grep nginx
+root       2796      1  0 00:01 ?        00:00:00 nginx: master process nginx
+nobody     2798   2796  0 00:01 ?        00:00:00 nginx: worker process
+root       2935   2730  0 00:10 pts/0    00:00:00 grep --color=auto nginx
+进入安装目录中，
+命令： cd /usr/local/nginx/sbin
+nginx 启动
+nginx -s reload 重新加载配置文件/重启
+nginx -s stop 暂停/关闭
+nginx -s quit 安全退出
+
+查看nginx软件安装位置：
+[cyw@localhost ~]$ whereis nginx
+nginx: /usr/local/bin/nginx /usr/local/nginx
+查询运行文件所在路径
+[cyw@localhost ~]$ which nginx
+/usr/local/bin/nginx
+https://blog.csdn.net/t8116189520/article/details/81909574
+配置完成开启nginx，访问服务器ip：端口号（默认80，阿帕奇也是一般不改改nginx），可以访问正常
+配置文件地址：/usr/local/nginx/conf/nginx.conf
+~bash: nginx: command not found...
+ln -s /usr/local/nginx/sbin/nginx /usr/local/bin(一步直接使用命令）
+https://blog.csdn.net/Hjingeng/article/details/105264814
+
+正向代理，是在客户端的。（如VPN）
+反向代理是作用在服务器端的，是一个虚拟ip(VIP)。（如一个域名多个地区服务器）
+
+www.kuangstudy.com/course
+服务apache，nginx，tomcat，lamp
+监控zabbix
+自动化ansanble
+虚拟化集群docker>k8s
+
+docker
+安装sudo wget -qO- https://get.docker.com/ | bash
+查看版本docker （--）version
+docker info
+systemctl restart docker.service重启docker服务
+# 启动docker引擎并设置开机启动
+sudo systemctl start docker
+sudo systemctl enable docker
+
+yum install git 安装
+git --version  git版本
+docker ps -a 查看docker中运行程序（容器）
+docker images查看镜像
+（container容器 images镜像）
+docker volume ls 查看 volume 列表
+docker network ls 查看网络列表
+[root@xxx ~]# docker rm container_name/container_id（删除容器）
+[root@xxx ~]# docker rmi image_name/image_id（删除镜像）
+docker commit -m "centos with git" -a "chenyingwei" 78606da131e5 yingwei/centos:git
+docker run -it centos:latest /bin/bash
+https://zhuanlan.zhihu.com/p/23599229
+
+（1）wget不是安装方式 他是一种下载软件类似与迅雷 如果要下载一个软件 我们可以直接 wget 下载地址
+（2）ap-get是ubuntu下的一个软件安装方式，它是基于debain
+（3）yum是redhat、centos下的一个软件安装方式，它是基于Linux的
+
+docker desktop安装
+官网下载对应系统版本，WSL2，开启虚拟化，下载Linux内核更新包，Linux分发版（微软商店）或发行版
+docker安装redis
+docker run -d -p 6379:6379 --name redis redis:latest
+docker run：docker运行软件
+-d后台运行
+-p端口暴露   docker里端口6379暴露到宿主机端口6379
+ --name redis：给容器命名 redis
+redis:latest：redis软件最新版本
+
+cp>>>docker-compose.yml
+此处打开power shell>>>docker-compose up -d
+wordpress
+站名：1122
+邮箱/账号：496062516@qq.com
+mm：LVpZMR9wPLRDAEbl6x
+文档docker.easydoc.net     dockerhub
+
+Build 为镜像（安装包）和运行
+编译 docker build -t test:v1 .
+-t 设置镜像名字和版本号
+运行 docker run -p 8080:8080 --name test-hello test:v1
+-p 映射容器内端口到宿主机
+--name 容器名字
+-d 后台运行
+
+docker-compose,dockerfile!
+
+前提git,redis,nginx,boot cloud,mysql，kvm，openstack>>docker
+基础：ftp，dns，ntp，postfix，nginx
+git
+git --version
+git config --list
+git config --global user.name "cyw028"
+git config --global user.email 411010470@qq.com
+vim ~/.gitconfig
+
+github
+cyw028
+411010470@qq.com
+cyw515134,,
+
+https://www.jianshu.com/p/26cda3d42943
+
+使用ssh密钥连接本地仓库和github远程仓库：git remote add origin git@github.com:cyw028/hellog.git
+git clone git@github.com:cyw028/hellog.git
+
+添加到git本地仓库：git add .或add文件名
+查看下文件是否被添加入本地仓库,使用命令: git status
+将文件提交本地库中git commit -m "xxx(备注)"
+将本地项目上传到github远程仓库：git push origin master
+完整流程!!!  https://blog.csdn.net/vir_lee/article/details/80464408
+git pull操作其实是git fetch 与 git merge 两个命令的集合。
+rclone browser，s3 browser
+
